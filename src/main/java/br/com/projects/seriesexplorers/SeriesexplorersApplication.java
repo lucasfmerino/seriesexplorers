@@ -28,8 +28,8 @@ public class SeriesexplorersApplication implements CommandLineRunner{
 
 
 		// Pegar imagem random
-		json = consume.getData("https://coffee.alexflipnote.dev/random.json");
-		System.out.println(json);
+		// json = consume.getData("https://coffee.alexflipnote.dev/random.json");
+		// System.out.println(json);
 	}
 
 }
