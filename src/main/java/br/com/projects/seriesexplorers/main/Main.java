@@ -1,9 +1,12 @@
 package br.com.projects.seriesexplorers.main;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
+import br.com.projects.seriesexplorers.dto.EpisodeDTO;
 import br.com.projects.seriesexplorers.dto.SeasonDTO;
 import br.com.projects.seriesexplorers.dto.SerieDTO;
 import br.com.projects.seriesexplorers.service.ConsumeAPI;
@@ -53,5 +56,16 @@ public class Main {
 
         seasons.forEach(t -> t.seasonEpisodes().forEach(e -> System.out.println(e.episodeTitle())));
 
+
+        List<EpisodeDTO> allSeasonEpisodes = seasons.stream()
+            .flatMap(t -> t.seasonEpisodes().stream())
+            .collect(Collectors.toList());
+
+        System.out.println("\nTop 5 episódios:");
+        allSeasonEpisodes.stream()
+            .filter(e -> !e.episodeRating().equalsIgnoreCase("N/A"))
+            .sorted(Comparator.comparing(EpisodeDTO::episodeRating).reversed())
+            .limit(5)
+            .forEach(System.out::println);
     }
 }
