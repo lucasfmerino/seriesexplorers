@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import br.com.projects.seriesexplorers.dto.EpisodeDTO;
 import br.com.projects.seriesexplorers.dto.SeasonDTO;
 import br.com.projects.seriesexplorers.dto.SerieDTO;
+import br.com.projects.seriesexplorers.model.Episode;
 import br.com.projects.seriesexplorers.service.ConsumeAPI;
 import br.com.projects.seriesexplorers.service.DataConverter;
 import br.com.projects.seriesexplorers.utils.Params;
@@ -54,11 +55,11 @@ public class Main {
         //     System.out.println();
         // }
 
-        seasons.forEach(t -> t.seasonEpisodes().forEach(e -> System.out.println(e.episodeTitle())));
+        seasons.forEach(s -> s.seasonEpisodes().forEach(e -> System.out.println(e.episodeTitle())));
 
 
         List<EpisodeDTO> allSeasonEpisodes = seasons.stream()
-            .flatMap(t -> t.seasonEpisodes().stream())
+            .flatMap(s -> s.seasonEpisodes().stream())
             .collect(Collectors.toList());
 
         System.out.println("\nTop 5 episódios:");
@@ -67,5 +68,12 @@ public class Main {
             .sorted(Comparator.comparing(EpisodeDTO::episodeRating).reversed())
             .limit(5)
             .forEach(System.out::println);
+
+        List<Episode> episodes = seasons.stream()
+            .flatMap(s -> s.seasonEpisodes().stream()
+                .map(dto -> new Episode(s.seasonNumber(), dto))
+            ).collect(Collectors.toList());
+
+        episodes.forEach(System.out::println);
     }
 }
