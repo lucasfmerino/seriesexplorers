@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -64,12 +65,18 @@ public class Main {
             .flatMap(s -> s.seasonEpisodes().stream())
             .collect(Collectors.toList());
 
-        System.out.println("\nTop 5 episódios:");
+        System.out.println("\nTop 10 episódios:");
         allSeasonEpisodes.stream()
             .filter(e -> !e.episodeRating().equalsIgnoreCase("N/A"))
+            // .peek(e -> System.out.println("Filter (N/A): " + e))
             .sorted(Comparator.comparing(EpisodeDTO::episodeRating).reversed())
-            .limit(5)
+            // .peek(e -> System.out.println("Order: " + e))
+            .limit(10)
+            // .peek(e -> System.out.println("Limit: " + e))
+            .map(e -> e.episodeTitle().toUpperCase())
+            // .peek(e -> System.out.println("Map toUpperCase: " + e))
             .forEach(System.out::println);
+
 
         List<Episode> episodes = seasons.stream()
             .flatMap(s -> s.seasonEpisodes().stream()
@@ -78,6 +85,21 @@ public class Main {
 
         episodes.forEach(System.out::println);
 
+        // BUSCA POR FILTRO
+        System.out.println("Digite o título ou um fragmento de títula para realizar a busca: ");
+        var searchInput = sc.nextLine();
+        Optional<Episode> searchEpisode = episodes.stream()
+            .filter(e -> e.getTitle().toUpperCase().contains(searchInput.toUpperCase()))
+            .findFirst();
+        
+        if(searchEpisode.isPresent()) {
+            System.out.println("Episódio encontrado!");
+            System.out.println("Temporada: " + searchEpisode.get().getSeason() + ", episoódio " + searchEpisode.get().getTitle());
+        } else {
+            System.out.println("Episódio não encontrado");
+        }
+
+        // BUSCA POR ANO
         System.out.println("A partir de que ano você deseja ver os episódios?");
         var year = sc.nextInt();
         sc.nextLine();
