@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -112,8 +113,16 @@ public class Main {
             .filter(e -> e.getReleaseDate() != null && e.getReleaseDate().isAfter(inputDate))
             .forEach(e -> System.out.println(
                 "Temporada: " + e.getSeason() +
-                "Episódio: " + e.getTitle() +
-                "Data de Lançamento: " + e.getReleaseDate().format(df)
+                " - Episódio: " + e.getTitle() +
+                " - Data de Lançamento: " + e.getReleaseDate().format(df)
             ));
+
+        // MEDIA DA TEMPORADA
+        Map<Integer, Double> ratingBySeason = episodes.stream()
+            .filter(e -> e.getRating() > 0.0)
+            .collect(Collectors.groupingBy(Episode::getSeason,
+            Collectors.averagingDouble(Episode::getRating)));
+        System.out.println();
+        System.out.println(ratingBySeason);
     }
 }
