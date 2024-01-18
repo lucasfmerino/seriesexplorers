@@ -1,5 +1,7 @@
 package br.com.projects.seriesexplorers.main;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -75,5 +77,21 @@ public class Main {
             ).collect(Collectors.toList());
 
         episodes.forEach(System.out::println);
+
+        System.out.println("A partir de que ano você deseja ver os episódios?");
+        var year = sc.nextInt();
+        sc.nextLine();
+
+        LocalDate inputDate = LocalDate.of(year, 1, 1);
+
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        episodes.stream()
+            .filter(e -> e.getReleaseDate() != null && e.getReleaseDate().isAfter(inputDate))
+            .forEach(e -> System.out.println(
+                "Temporada: " + e.getSeason() +
+                "Episódio: " + e.getTitle() +
+                "Data de Lançamento: " + e.getReleaseDate().format(df)
+            ));
     }
 }
