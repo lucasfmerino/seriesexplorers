@@ -18,40 +18,52 @@ public class Main {
 
     private static final String BASE_URL = "https://www.omdbapi.com/?t=";
     private static final String API_KEY = Params.apiKey;
+    private List<SerieDTO> seriesData = new ArrayList<>();
 
     public void displayMenu() {
 
         var menu = """
+
                 1 - Buscar Séries
                 2 - Busca Episódios
+                3 - Listar séries buscadas
 
                 0 - Sair
                 """;
 
-        System.out.println(menu);
-        var option = sc.nextInt();
-        sc.nextLine();
+        var option = - 1;
+        while (option != 0) {
 
-        switch (option) {
-            case 1:
-                searchWebSerie();
-                break;
-        
-            case 2:
-                searchEpisodeBySerie();
-                break;
-
-            case 3:
-                System.out.println("Desligando...");
-                break;
-
-            default:
-                System.out.println("Opção Inválida");;
+            System.out.println(menu);
+            option = sc.nextInt();
+            sc.nextLine();
+    
+            switch (option) {
+                case 1:
+                    searchWebSerie();
+                    break;
+            
+                case 2:
+                    searchEpisodeBySerie();
+                    break;
+                
+                case 3:
+                    listSearchedSeries();
+                    break;
+    
+                case 0:
+                    System.out.println("Desligando...");
+                    break;
+    
+                default:
+                    System.out.println("Opção Inválida");;
+            }
         }
     }
 
     private void searchWebSerie() {
         SerieDTO serieData = getSerieData();
+        seriesData.add(serieData);
         System.out.println(serieData);
     }
 
@@ -72,5 +84,9 @@ public class Main {
             seasons.add(seasonData);
         }
         seasons.forEach(System.out::println);
+    }
+
+    private void listSearchedSeries() {
+        seriesData.forEach(System.out::println);
     }
 }
