@@ -1,11 +1,14 @@
 package br.com.projects.seriesexplorers.main;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import br.com.projects.seriesexplorers.dto.SeasonDTO;
 import br.com.projects.seriesexplorers.dto.SerieDTO;
+import br.com.projects.seriesexplorers.model.Serie;
 import br.com.projects.seriesexplorers.service.ConsumeAPI;
 import br.com.projects.seriesexplorers.service.DataConverter;
 import br.com.projects.seriesexplorers.utils.Params;
@@ -31,27 +34,26 @@ public class Main {
                 0 - Sair
                 """;
 
-        var option = - 1;
-        while (option != 0) {
+        var option = "";
+        while (!option.equals("0")) {
 
             System.out.println(menu);
-            option = sc.nextInt();
-            sc.nextLine();
-    
+            option = sc.nextLine();
+
             switch (option) {
-                case 1:
+                case "1":
                     searchWebSerie();
                     break;
             
-                case 2:
+                case "2":
                     searchEpisodeBySerie();
                     break;
                 
-                case 3:
+                case "3":
                     listSearchedSeries();
                     break;
     
-                case 0:
+                case "0":
                     System.out.println("Desligando...");
                     break;
     
@@ -87,6 +89,12 @@ public class Main {
     }
 
     private void listSearchedSeries() {
-        seriesData.forEach(System.out::println);
+        List<Serie> series = new ArrayList<>();
+        series = seriesData.stream()
+            .map(serieData -> new Serie(serieData))
+                .collect(Collectors.toList());
+        series.stream()
+            .sorted(Comparator.comparing(Serie::getGenre))
+            .forEach(System.out::println);
     }
 }
