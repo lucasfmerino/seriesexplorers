@@ -81,3 +81,5 @@ buildNumber.properties
 ### Personal ###
 personal_notes
 Params.java
+application.properties
+resources
