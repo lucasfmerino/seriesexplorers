@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import br.com.projects.seriesexplorers.dto.SeasonDTO;
 import br.com.projects.seriesexplorers.dto.SerieDTO;
 import br.com.projects.seriesexplorers.model.Serie;
+import br.com.projects.seriesexplorers.repository.SerieRepository;
 import br.com.projects.seriesexplorers.service.ConsumeAPI;
 import br.com.projects.seriesexplorers.service.DataConverter;
 import br.com.projects.seriesexplorers.utils.Params;
@@ -22,6 +23,11 @@ public class Main {
     private static final String BASE_URL = "https://www.omdbapi.com/?t=";
     private static final String API_KEY = Params.apiKey;
     private List<SerieDTO> seriesData = new ArrayList<>();
+    private SerieRepository serieRepository;
+
+    public Main(SerieRepository serieRepository) {
+        this.serieRepository = serieRepository;
+    }
 
     public void displayMenu() {
 
@@ -65,7 +71,9 @@ public class Main {
 
     private void searchWebSerie() {
         SerieDTO serieData = getSerieData();
-        seriesData.add(serieData);
+        Serie serie = new Serie(serieData);
+        // seriesData.add(serieData);
+        serieRepository.save(serie);
         System.out.println(serieData);
     }
 

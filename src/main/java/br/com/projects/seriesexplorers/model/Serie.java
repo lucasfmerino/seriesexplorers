@@ -1,5 +1,7 @@
 package br.com.projects.seriesexplorers.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.OptionalDouble;
 
 import br.com.projects.seriesexplorers.dto.SerieDTO;
@@ -12,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "T_SERIE")
@@ -36,6 +39,9 @@ public class Serie {
     private String poster;
 
     private String plot;
+
+    @Transient
+    private List<Episode> episodes = new ArrayList<>();
 
     public Serie(SerieDTO serieData) {
         this.title = serieData.serieTitle();
@@ -110,6 +116,14 @@ public class Serie {
 
     public void setPlot(String plot) {
         this.plot = plot;
+    }
+
+    public List<Episode> getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(List<Episode> episodes) {
+        this.episodes = episodes;
     }
 
     @Override
