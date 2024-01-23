@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+// import java.util.stream.Collectors;
 
 import br.com.projects.seriesexplorers.dto.SeasonDTO;
 import br.com.projects.seriesexplorers.dto.SerieDTO;
@@ -22,7 +22,7 @@ public class Main {
 
     private static final String BASE_URL = "https://www.omdbapi.com/?t=";
     private static final String API_KEY = Params.apiKey;
-    private List<SerieDTO> seriesData = new ArrayList<>();
+    // private List<SerieDTO> seriesData = new ArrayList<>();
     private SerieRepository serieRepository;
 
     public Main(SerieRepository serieRepository) {
@@ -96,11 +96,19 @@ public class Main {
         seasons.forEach(System.out::println);
     }
 
+    // private void listSearchedSeries() {
+    //     List<Serie> series = new ArrayList<>();
+    //     series = seriesData.stream()
+    //         .map(serieData -> new Serie(serieData))
+    //             .collect(Collectors.toList());
+    //     series.stream()
+    //         .sorted(Comparator.comparing(Serie::getGenre))
+    //         .forEach(System.out::println);
+    // }
+
+    
     private void listSearchedSeries() {
-        List<Serie> series = new ArrayList<>();
-        series = seriesData.stream()
-            .map(serieData -> new Serie(serieData))
-                .collect(Collectors.toList());
+        List<Serie> series = serieRepository.findAll();
         series.stream()
             .sorted(Comparator.comparing(Serie::getGenre))
             .forEach(System.out::println);
