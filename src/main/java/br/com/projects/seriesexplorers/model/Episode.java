@@ -4,13 +4,33 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 import br.com.projects.seriesexplorers.dto.EpisodeDTO;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "T_EPISODE")
 public class Episode {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private Integer season;
+
     private String title;
+
     private Integer number;
+
     private Double rating;
+
     private LocalDate releaseDate;
+
+    @ManyToOne
+    private Serie serie;
 
     // public Episode(EpisodeDTO episodeDto) {
     //     this.season = Integer.parseInt(episodeDto.espisodeSeason());
@@ -36,6 +56,14 @@ public class Episode {
             // this.releaseDate = LocalDate.parse("2007-12-03");
         }
 
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Integer getSeason() {
@@ -76,6 +104,14 @@ public class Episode {
 
     public void setReleaseDate(LocalDate releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    public Serie getSerie() {
+        return serie;
+    }
+
+    public void setSerie(Serie serie) {
+        this.serie = serie;
     }
 
     @Override

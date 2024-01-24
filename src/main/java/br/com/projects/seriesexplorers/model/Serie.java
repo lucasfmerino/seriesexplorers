@@ -13,13 +13,14 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+// import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "T_SERIE")
 public class Serie {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,7 +41,8 @@ public class Serie {
 
     private String plot;
 
-    @Transient
+    // @Transient
+    @OneToMany(mappedBy = "serie")
     private List<Episode> episodes = new ArrayList<>();
 
     public Serie() {
