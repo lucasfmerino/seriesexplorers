@@ -41,6 +41,7 @@ public class Main {
                 2 - Busca Episódios
                 3 - Listar séries buscadas
                 4 - Buscar série por título
+                5 - Buscar série por ator
 
                 0 - Sair
                 """;
@@ -66,6 +67,10 @@ public class Main {
 
                 case "4":
                     findSerieByTitle();
+                    break;
+
+                case "5":
+                    findSeriesByActor();;
                     break;
 
                 case "0":
@@ -127,6 +132,38 @@ public class Main {
         }
     }
 
+    
+    private void listSearchedSeries() {
+        series = serieRepository.findAll();
+        series.stream()
+        .sorted(Comparator.comparing(Serie::getGenre))
+        .forEach(System.out::println);
+    }
+    
+    private void findSerieByTitle() {
+        System.out.println("Digite o nome da série: ");
+        var serieTitle = sc.nextLine();
+        Optional<Serie> serchedSerie = serieRepository.findByTitleContainingIgnoreCase(serieTitle);
+        
+        if (serchedSerie.isPresent()) {
+            System.out.println("Dados da série: " + serchedSerie.get());
+        } else {
+            System.out.println("Série não encontrada");
+        }
+    }
+
+    private void findSeriesByActor() {
+        System.out.println("Digite o nome do ator/atriz: ");
+        var actorName = sc.nextLine();
+        System.out.println("Digite a avaliação mínima das séires que deseja buscar: ");
+        var rating = sc.nextDouble();
+        sc.nextLine();
+        List<Serie> serchedSeries = serieRepository.findByActorsContainingIgnoreCaseAndRatingGreaterThanEqual(actorName, rating);
+        serchedSeries.forEach(
+            s -> System.out.println(s.getTitle() + " - Rating:" + s.getRating())
+        );
+    }
+
     // private void searchEpisodeBySerieBeckup() {
     // SerieDTO serieDTO = getSerieData();
     // List<SeasonDTO> seasons = new ArrayList<>();
@@ -138,8 +175,8 @@ public class Main {
     // }
     // seasons.forEach(System.out::println);
     // }
-
-    // private void listSearchedSeries() {
+    
+    // private void listSearchedSeriesBeckup() {
     // List<Serie> series = new ArrayList<>();
     // series = seriesData.stream()
     // .map(serieData -> new Serie(serieData))
@@ -148,23 +185,4 @@ public class Main {
     // .sorted(Comparator.comparing(Serie::getGenre))
     // .forEach(System.out::println);
     // }
-
-    private void listSearchedSeries() {
-        series = serieRepository.findAll();
-        series.stream()
-                .sorted(Comparator.comparing(Serie::getGenre))
-                .forEach(System.out::println);
-    }
-
-    private void findSerieByTitle() {
-        System.out.println("Digite o nome da série: ");
-        var serieTitle = sc.nextLine();
-        Optional<Serie> serchedSerie = serieRepository.findByTitleContainingIgnoreCase(serieTitle);
-
-        if (serchedSerie.isPresent()) {
-            System.out.println("Dados da série: " + serchedSerie.get());
-        } else {
-            System.out.println("Série não encontrada");
-        }
-    }
 }
