@@ -3,11 +3,14 @@ package br.com.projects.seriesexplorers.main;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 // import java.util.stream.Collectors;
+import java.util.stream.Collectors;
 
 import br.com.projects.seriesexplorers.dto.SeasonDTO;
 import br.com.projects.seriesexplorers.dto.SerieDTO;
+import br.com.projects.seriesexplorers.model.Episode;
 import br.com.projects.seriesexplorers.model.Serie;
 import br.com.projects.seriesexplorers.repository.SerieRepository;
 import br.com.projects.seriesexplorers.service.ConsumeAPI;
@@ -24,6 +27,7 @@ public class Main {
     private static final String API_KEY = Params.apiKey;
     // private List<SerieDTO> seriesData = new ArrayList<>();
     private SerieRepository serieRepository;
+    private List<Serie> series = new ArrayList<>();
 
     public Main(SerieRepository serieRepository) {
         this.serieRepository = serieRepository;
@@ -86,15 +90,46 @@ public class Main {
     }
 
     private void searchEpisodeBySerie() {
-        SerieDTO serieDTO = getSerieData();
-        List<SeasonDTO> seasons = new ArrayList<>();
-        for (int i = 1; i <= serieDTO.serieSeasons(); i++) {
-            var json = consume.getApiData(BASE_URL + serieDTO.serieTitle().replace(" ", "+") + "&season=" + i + API_KEY);
-            SeasonDTO seasonData = converter.getData(json, SeasonDTO.class);
-            seasons.add(seasonData);
+        listSearchedSeries();
+        System.out.println("Digite o nome da série: ");
+        var serieName = sc.nextLine();
+
+        Optional<Serie> serie = series.stream()
+            .filter(s -> s.getTitle().toLowerCase().contains(serieName.toLowerCase()))
+            .findFirst();
+
+        if(serie.isPresent()) {
+            var serchedSerie = serie.get();
+            List<SeasonDTO> seasons = new ArrayList<>();
+            for (int i = 1; i <= serchedSerie.getTotalSeasons(); i++) {
+                var json = consume.getApiData(BASE_URL + serchedSerie.getTitle().replace(" ", "+") + "&season=" + i + API_KEY);
+                SeasonDTO seasonData = converter.getData(json, SeasonDTO.class);
+                seasons.add(seasonData);
+            }
+            seasons.forEach(System.out::println);
+
+            List<Episode> episodes = seasons.stream()
+                .flatMap(d -> d.seasonEpisodes().stream()
+                    .map(e -> new Episode(d.seasonNumber(), e)))
+                .collect(Collectors.toList());
+
+            serchedSerie.setEpisodes(episodes);
+            serieRepository.save(serchedSerie);
+        } else {
+            System.out.println("Série não encontrada.");
         }
-        seasons.forEach(System.out::println);
     }
+
+    // private void searchEpisodeBySerieBeckup() {
+    //     SerieDTO serieDTO = getSerieData();
+    //     List<SeasonDTO> seasons = new ArrayList<>();
+    //     for (int i = 1; i <= serieDTO.serieSeasons(); i++) {
+    //         var json = consume.getApiData(BASE_URL + serieDTO.serieTitle().replace(" ", "+") + "&season=" + i + API_KEY);
+    //         SeasonDTO seasonData = converter.getData(json, SeasonDTO.class);
+    //         seasons.add(seasonData);
+    //     }
+    //     seasons.forEach(System.out::println);
+    // }
 
     // private void listSearchedSeries() {
     //     List<Serie> series = new ArrayList<>();
@@ -108,7 +143,7 @@ public class Main {
 
     
     private void listSearchedSeries() {
-        List<Serie> series = serieRepository.findAll();
+        series = serieRepository.findAll();
         series.stream()
             .sorted(Comparator.comparing(Serie::getGenre))
             .forEach(System.out::println);

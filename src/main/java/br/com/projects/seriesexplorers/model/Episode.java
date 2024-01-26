@@ -32,6 +32,9 @@ public class Episode {
     @ManyToOne
     private Serie serie;
 
+
+    public Episode() {}
+
     // public Episode(EpisodeDTO episodeDto) {
     //     this.season = Integer.parseInt(episodeDto.espisodeSeason());
     //     this.title = episodeDto.episodeTitle();

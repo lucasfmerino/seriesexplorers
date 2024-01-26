@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.OptionalDouble;
 
 import br.com.projects.seriesexplorers.dto.SerieDTO;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 // import br.com.projects.seriesexplorers.service.IntegrationGPT;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -42,7 +44,7 @@ public class Serie {
     private String plot;
 
     // @Transient
-    @OneToMany(mappedBy = "serie")
+    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Episode> episodes = new ArrayList<>();
 
     public Serie() {
@@ -128,6 +130,7 @@ public class Serie {
     }
 
     public void setEpisodes(List<Episode> episodes) {
+        episodes.forEach(e -> e.setSerie(this));
         this.episodes = episodes;
     }
 
@@ -139,6 +142,7 @@ public class Serie {
         "Rating: " + rating + '\n' +
         "Actors: " + actors + '\n' +
         "Poster: " + poster + '\n' +
-        "Plot: " + plot + '\n';
+        "Plot: " + plot + '\n' +
+        "Episodes: " + episodes + '\n';
     }
 }
