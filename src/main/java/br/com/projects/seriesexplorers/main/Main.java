@@ -37,9 +37,10 @@ public class Main {
 
         var menu = """
 
-                1 - Buscar Séries
+                1 - Buscar Séries para cadastro
                 2 - Busca Episódios
                 3 - Listar séries buscadas
+                4 - Buscar série por título
 
                 0 - Sair
                 """;
@@ -54,21 +55,26 @@ public class Main {
                 case "1":
                     searchWebSerie();
                     break;
-            
+
                 case "2":
                     searchEpisodeBySerie();
                     break;
-                
+
                 case "3":
                     listSearchedSeries();
                     break;
-    
+
+                case "4":
+                    findSerieByTitle();
+                    break;
+
                 case "0":
                     System.out.println("Desligando...");
                     break;
-    
+
                 default:
-                    System.out.println("Opção Inválida");;
+                    System.out.println("Opção Inválida");
+                    ;
             }
         }
     }
@@ -85,7 +91,7 @@ public class Main {
         System.out.println("Digite o nome da série: ");
         var serieTitle = sc.nextLine();
         var json = consume.getApiData(BASE_URL + serieTitle.replace(" ", "+") + API_KEY);
-        SerieDTO serieData = converter.getData(json,  SerieDTO.class);
+        SerieDTO serieData = converter.getData(json, SerieDTO.class);
         return serieData;
     }
 
@@ -95,23 +101,24 @@ public class Main {
         var serieName = sc.nextLine();
 
         Optional<Serie> serie = series.stream()
-            .filter(s -> s.getTitle().toLowerCase().contains(serieName.toLowerCase()))
-            .findFirst();
+                .filter(s -> s.getTitle().toLowerCase().contains(serieName.toLowerCase()))
+                .findFirst();
 
-        if(serie.isPresent()) {
+        if (serie.isPresent()) {
             var serchedSerie = serie.get();
             List<SeasonDTO> seasons = new ArrayList<>();
             for (int i = 1; i <= serchedSerie.getTotalSeasons(); i++) {
-                var json = consume.getApiData(BASE_URL + serchedSerie.getTitle().replace(" ", "+") + "&season=" + i + API_KEY);
+                var json = consume
+                        .getApiData(BASE_URL + serchedSerie.getTitle().replace(" ", "+") + "&season=" + i + API_KEY);
                 SeasonDTO seasonData = converter.getData(json, SeasonDTO.class);
                 seasons.add(seasonData);
             }
             seasons.forEach(System.out::println);
 
             List<Episode> episodes = seasons.stream()
-                .flatMap(d -> d.seasonEpisodes().stream()
-                    .map(e -> new Episode(d.seasonNumber(), e)))
-                .collect(Collectors.toList());
+                    .flatMap(d -> d.seasonEpisodes().stream()
+                            .map(e -> new Episode(d.seasonNumber(), e)))
+                    .collect(Collectors.toList());
 
             serchedSerie.setEpisodes(episodes);
             serieRepository.save(serchedSerie);
@@ -121,31 +128,43 @@ public class Main {
     }
 
     // private void searchEpisodeBySerieBeckup() {
-    //     SerieDTO serieDTO = getSerieData();
-    //     List<SeasonDTO> seasons = new ArrayList<>();
-    //     for (int i = 1; i <= serieDTO.serieSeasons(); i++) {
-    //         var json = consume.getApiData(BASE_URL + serieDTO.serieTitle().replace(" ", "+") + "&season=" + i + API_KEY);
-    //         SeasonDTO seasonData = converter.getData(json, SeasonDTO.class);
-    //         seasons.add(seasonData);
-    //     }
-    //     seasons.forEach(System.out::println);
+    // SerieDTO serieDTO = getSerieData();
+    // List<SeasonDTO> seasons = new ArrayList<>();
+    // for (int i = 1; i <= serieDTO.serieSeasons(); i++) {
+    // var json = consume.getApiData(BASE_URL + serieDTO.serieTitle().replace(" ",
+    // "+") + "&season=" + i + API_KEY);
+    // SeasonDTO seasonData = converter.getData(json, SeasonDTO.class);
+    // seasons.add(seasonData);
+    // }
+    // seasons.forEach(System.out::println);
     // }
 
     // private void listSearchedSeries() {
-    //     List<Serie> series = new ArrayList<>();
-    //     series = seriesData.stream()
-    //         .map(serieData -> new Serie(serieData))
-    //             .collect(Collectors.toList());
-    //     series.stream()
-    //         .sorted(Comparator.comparing(Serie::getGenre))
-    //         .forEach(System.out::println);
+    // List<Serie> series = new ArrayList<>();
+    // series = seriesData.stream()
+    // .map(serieData -> new Serie(serieData))
+    // .collect(Collectors.toList());
+    // series.stream()
+    // .sorted(Comparator.comparing(Serie::getGenre))
+    // .forEach(System.out::println);
     // }
 
-    
     private void listSearchedSeries() {
         series = serieRepository.findAll();
         series.stream()
-            .sorted(Comparator.comparing(Serie::getGenre))
-            .forEach(System.out::println);
+                .sorted(Comparator.comparing(Serie::getGenre))
+                .forEach(System.out::println);
+    }
+
+    private void findSerieByTitle() {
+        System.out.println("Digite o nome da série: ");
+        var serieTitle = sc.nextLine();
+        Optional<Serie> serchedSerie = serieRepository.findByTitleContainingIgnoreCase(serieTitle);
+
+        if (serchedSerie.isPresent()) {
+            System.out.println("Dados da série: " + serchedSerie.get());
+        } else {
+            System.out.println("Série não encontrada");
+        }
     }
 }
