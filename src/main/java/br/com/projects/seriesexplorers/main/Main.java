@@ -42,6 +42,7 @@ public class Main {
                 3 - Listar séries buscadas
                 4 - Buscar série por título
                 5 - Buscar série por ator
+                6 - Buscar top séries
 
                 0 - Sair
                 """;
@@ -70,7 +71,11 @@ public class Main {
                     break;
 
                 case "5":
-                    findSeriesByActor();;
+                    findSeriesByActor();
+                    break;
+
+                case "6":
+                    searchTopSeries();
                     break;
 
                 case "0":
@@ -162,6 +167,13 @@ public class Main {
         serchedSeries.forEach(
             s -> System.out.println(s.getTitle() + " - Rating:" + s.getRating())
         );
+    }
+
+    private void searchTopSeries() {
+        List<Serie> topSeries = serieRepository.findTop5ByOrderByRatingDesc();
+        topSeries.forEach(
+            s -> System.out.println(s.getTitle() + " - Rating: " + s.getRating())
+            );
     }
 
     // private void searchEpisodeBySerieBeckup() {
