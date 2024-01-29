@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import br.com.projects.seriesexplorers.model.Category;
 import br.com.projects.seriesexplorers.model.Serie;
 
 public interface SerieRepository extends JpaRepository<Serie, Long>{
@@ -14,4 +15,6 @@ public interface SerieRepository extends JpaRepository<Serie, Long>{
     List<Serie> findByActorsContainingIgnoreCaseAndRatingGreaterThanEqual(String actorName, Double rating);
 
     List<Serie> findTop5ByOrderByRatingDesc();
+
+    List<Serie> findByGenre(Category category);
 }

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import br.com.projects.seriesexplorers.dto.SeasonDTO;
 import br.com.projects.seriesexplorers.dto.SerieDTO;
+import br.com.projects.seriesexplorers.model.Category;
 import br.com.projects.seriesexplorers.model.Episode;
 import br.com.projects.seriesexplorers.model.Serie;
 import br.com.projects.seriesexplorers.repository.SerieRepository;
@@ -43,6 +44,7 @@ public class Main {
                 4 - Buscar série por título
                 5 - Buscar série por ator
                 6 - Buscar top séries
+                7 - Buscar serie por categoria
 
                 0 - Sair
                 """;
@@ -76,6 +78,10 @@ public class Main {
 
                 case "6":
                     searchTopSeries();
+                    break;
+                    
+                case "7":
+                    searchSeriesByCategory();
                     break;
 
                 case "0":
@@ -174,6 +180,15 @@ public class Main {
         topSeries.forEach(
             s -> System.out.println(s.getTitle() + " - Rating: " + s.getRating())
             );
+    }
+
+    private void searchSeriesByCategory() {
+        System.out.println("Digite o nome da categoria: ");
+        var genreName = sc.nextLine();
+        Category category = Category.fromPortuguese(genreName);
+        List<Serie> seriesByCategory = serieRepository.findByGenre(category);
+        System.out.println("Series da categoria" + genreName);
+        seriesByCategory.forEach(System.out::println);
     }
 
     // private void searchEpisodeBySerieBeckup() {

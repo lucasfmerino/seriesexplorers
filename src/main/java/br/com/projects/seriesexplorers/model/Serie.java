@@ -54,7 +54,7 @@ public class Serie {
         this.title = serieData.serieTitle();
         this.totalSeasons = serieData.serieSeasons();
         this.rating = OptionalDouble.of(Double.valueOf(serieData.serieRating())).orElse(0);
-        this.genre = Category.fromPortuguese(serieData.serieGenre().split(",")[0].trim());
+        this.genre = Category.fromOmdb(serieData.serieGenre().split(",")[0].trim());
         this.actors = serieData.serieActors();
         this.poster = serieData.seriePoster();
         // this.plot = IntegrationGPT.translate(serieData.seriePlot()).trim();
