@@ -45,6 +45,7 @@ public class Main {
                 5 - Buscar série por ator
                 6 - Buscar top séries
                 7 - Buscar serie por categoria
+                8 - Filtrar séries
 
                 0 - Sair
                 """;
@@ -79,9 +80,13 @@ public class Main {
                 case "6":
                     searchTopSeries();
                     break;
-                    
+
                 case "7":
                     searchSeriesByCategory();
+                    break;
+
+                case "8":
+                    filterSeriresBySeasonAndRating();
                     break;
 
                 case "0":
@@ -143,19 +148,18 @@ public class Main {
         }
     }
 
-    
     private void listSearchedSeries() {
         series = serieRepository.findAll();
         series.stream()
-        .sorted(Comparator.comparing(Serie::getGenre))
-        .forEach(System.out::println);
+                .sorted(Comparator.comparing(Serie::getGenre))
+                .forEach(System.out::println);
     }
-    
+
     private void findSerieByTitle() {
         System.out.println("Digite o nome da série: ");
         var serieTitle = sc.nextLine();
         Optional<Serie> serchedSerie = serieRepository.findByTitleContainingIgnoreCase(serieTitle);
-        
+
         if (serchedSerie.isPresent()) {
             System.out.println("Dados da série: " + serchedSerie.get());
         } else {
@@ -169,17 +173,16 @@ public class Main {
         System.out.println("Digite a avaliação mínima das séires que deseja buscar: ");
         var rating = sc.nextDouble();
         sc.nextLine();
-        List<Serie> serchedSeries = serieRepository.findByActorsContainingIgnoreCaseAndRatingGreaterThanEqual(actorName, rating);
+        List<Serie> serchedSeries = serieRepository.findByActorsContainingIgnoreCaseAndRatingGreaterThanEqual(actorName,
+                rating);
         serchedSeries.forEach(
-            s -> System.out.println(s.getTitle() + " - Rating:" + s.getRating())
-        );
+                s -> System.out.println(s.getTitle() + " - Rating:" + s.getRating()));
     }
 
     private void searchTopSeries() {
         List<Serie> topSeries = serieRepository.findTop5ByOrderByRatingDesc();
         topSeries.forEach(
-            s -> System.out.println(s.getTitle() + " - Rating: " + s.getRating())
-            );
+                s -> System.out.println(s.getTitle() + " - Rating: " + s.getRating()));
     }
 
     private void searchSeriesByCategory() {
@@ -187,8 +190,21 @@ public class Main {
         var genreName = sc.nextLine();
         Category category = Category.fromPortuguese(genreName);
         List<Serie> seriesByCategory = serieRepository.findByGenre(category);
-        System.out.println("Series da categoria" + genreName);
+        System.out.println("Series da categoria " + genreName);
         seriesByCategory.forEach(System.out::println);
+    }
+
+    private void filterSeriresBySeasonAndRating(){
+        System.out.println("Filtrar séries até quantas temporadas? ");
+        var totalSeasons = sc.nextInt();
+        sc.nextLine();
+        System.out.println("Com avaliação a partir de que valor? ");
+        var rating = sc.nextDouble();
+        sc.nextLine();
+        List<Serie> filterSeries = serieRepository.findByTotalSeasonsLessThanEqualAndRatingGreaterThanEqual(totalSeasons, rating);
+        System.out.println("*** Séries filtradas ***");
+        filterSeries.forEach(s ->
+                System.out.println(s.getTitle() + "  - avaliação: " + s.getRating()));
     }
 
     // private void searchEpisodeBySerieBeckup() {
@@ -197,12 +213,12 @@ public class Main {
     // for (int i = 1; i <= serieDTO.serieSeasons(); i++) {
     // var json = consume.getApiData(BASE_URL + serieDTO.serieTitle().replace(" ",
     // "+") + "&season=" + i + API_KEY);
-    // SeasonDTO seasonData = converter.getData(json, SeasonDTO.class);
+    // SeasonDTO seasonData = converter.getData(json, SeasonDTO.class);8
     // seasons.add(seasonData);
     // }
     // seasons.forEach(System.out::println);
     // }
-    
+
     // private void listSearchedSeriesBeckup() {
     // List<Serie> series = new ArrayList<>();
     // series = seriesData.stream()
