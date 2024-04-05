@@ -46,6 +46,7 @@ public class Main {
                 6 - Buscar top séries
                 7 - Buscar serie por categoria
                 8 - Filtrar séries
+                9 - Buscar episódio por nome
 
                 0 - Sair
                 """;
@@ -88,6 +89,9 @@ public class Main {
                 case "8":
                     filterSeriresBySeasonAndRating();
                     break;
+
+                case "9":
+                    searchEpisodeBySegment();
 
                 case "0":
                     System.out.println("Desligando...");
@@ -205,6 +209,20 @@ public class Main {
         System.out.println("*** Séries filtradas ***");
         filterSeries.forEach(s ->
                 System.out.println(s.getTitle() + "  - avaliação: " + s.getRating()));
+    }
+
+    private void searchEpisodeBySegment(){
+        System.out.println("Qual o nome do episódio para buscar?");
+        var segment = sc.nextLine();
+        List<Episode> episodesFound = serieRepository.episodesBySegment(segment);
+        episodesFound.forEach(e ->
+            System.out.printf(
+                "Serie: %s - Temporada: %s Episódio: %s - %s\n",
+                e.getSerie().getTitle(),
+                e.getSeason(),
+                e.getNumber(),
+                e.getTitle()
+            ));
     }
 
     // private void searchEpisodeBySerieBeckup() {

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import br.com.projects.seriesexplorers.model.Category;
+import br.com.projects.seriesexplorers.model.Episode;
 import br.com.projects.seriesexplorers.model.Serie;
 
 public interface SerieRepository extends JpaRepository<Serie, Long>{
@@ -24,4 +25,7 @@ public interface SerieRepository extends JpaRepository<Serie, Long>{
     // @Query(value = "SELECT * FROM t_serie WHERE t_serie.total_seasons <= 4 and t_serie.rating >= 7", nativeQuery = true)
     @Query("SELECT s FROM Serie s WHERE s.totalSeasons <= :totalSeasons and s.rating >= :rating")
     List<Serie> findBySeasonsAndRating(int totalSeasons, double rating);
+
+    @Query("SELECT e FROM Serie s JOIN s.episodes e WHERE e.title ILIKE %:segment%")
+    List<Episode> episodesBySegment(String segment);
 }
