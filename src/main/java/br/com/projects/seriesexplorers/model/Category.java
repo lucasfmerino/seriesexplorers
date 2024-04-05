@@ -16,7 +16,6 @@ public enum Category {
         this.omdbCategory = omdbCategory;
         this.portugueseCategory = portugueseCategory;
     }
-    
 
     public static Category fromOmdb(String text) {
         for (Category category : Category.values()) {

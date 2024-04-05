@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import br.com.projects.seriesexplorers.model.Category;
 import br.com.projects.seriesexplorers.model.Serie;
@@ -18,5 +19,9 @@ public interface SerieRepository extends JpaRepository<Serie, Long>{
 
     List<Serie> findByGenre(Category category);
 
-    List<Serie> findByTotalSeasonsLessThanEqualAndRatingGreaterThanEqual(int totalTemporadas, double avaliacao);
+    List<Serie> findByTotalSeasonsLessThanEqualAndRatingGreaterThanEqual(int totalSeasons, double rating);
+
+    // @Query(value = "SELECT * FROM t_serie WHERE t_serie.total_seasons <= 4 and t_serie.rating >= 7", nativeQuery = true)
+    @Query("SELECT s FROM Serie s WHERE s.totalSeasons <= :totalSeasons and s.rating >= :rating")
+    List<Serie> findBySeasonsAndRating(int totalSeasons, double rating);
 }

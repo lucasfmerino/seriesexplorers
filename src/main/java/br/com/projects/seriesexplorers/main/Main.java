@@ -201,7 +201,7 @@ public class Main {
         System.out.println("Com avaliação a partir de que valor? ");
         var rating = sc.nextDouble();
         sc.nextLine();
-        List<Serie> filterSeries = serieRepository.findByTotalSeasonsLessThanEqualAndRatingGreaterThanEqual(totalSeasons, rating);
+        List<Serie> filterSeries = serieRepository.findBySeasonsAndRating(totalSeasons, rating);
         System.out.println("*** Séries filtradas ***");
         filterSeries.forEach(s ->
                 System.out.println(s.getTitle() + "  - avaliação: " + s.getRating()));
