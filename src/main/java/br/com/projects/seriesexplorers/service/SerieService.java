@@ -60,6 +60,12 @@ public class SerieService {
         return null;
     }
 
+    public List<EpisodeResponseDTO> getSeasonByNumber(Long id, Long number) {
+        return serieRepository.getEpisodesBySeason(id, number).stream().map(e -> new EpisodeResponseDTO(
+            e.getSeason(), e.getNumber(), e.getTitle()))
+            .collect(Collectors.toList());
+    }
+
     private List<SerieResponseDTO> dataConverter(List<Serie> series) {
         return series.stream()
                 .map(s -> new SerieResponseDTO(
