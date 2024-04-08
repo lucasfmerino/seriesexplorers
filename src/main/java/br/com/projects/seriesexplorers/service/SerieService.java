@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.projects.seriesexplorers.dto.EpisodeResponseDTO;
 import br.com.projects.seriesexplorers.dto.SerieResponseDTO;
 import br.com.projects.seriesexplorers.model.Serie;
 import br.com.projects.seriesexplorers.repository.SerieRepository;
@@ -43,6 +44,18 @@ public class SerieService {
                     s.getActors(),
                     s.getPoster(),
                     s.getPlot());
+        }
+        return null;
+    }
+
+    public List<EpisodeResponseDTO> getAllSeasons(Long id) {
+        Optional<Serie> serie = serieRepository.findById(id);
+
+        if (serie.isPresent()) {
+            Serie s = serie.get();
+            return s.getEpisodes().stream().map(e -> new EpisodeResponseDTO(
+                    e.getSeason(), e.getNumber(), e.getTitle()))
+                    .collect(Collectors.toList());
         }
         return null;
     }
