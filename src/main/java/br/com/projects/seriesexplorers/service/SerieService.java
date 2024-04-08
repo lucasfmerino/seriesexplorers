@@ -1,6 +1,7 @@
 package br.com.projects.seriesexplorers.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,9 @@ public class SerieService {
     @Autowired
     private SerieRepository serieRepository;
 
-    
     public List<SerieResponseDTO> getAllSeries() {
         return dataConverter(serieRepository.findAll());
     }
-
 
     public List<SerieResponseDTO> getTop5Series() {
         return dataConverter(serieRepository.findTop5ByOrderByRatingDesc());
@@ -30,6 +29,23 @@ public class SerieService {
         return dataConverter(serieRepository.lastReleases());
     }
 
+    public SerieResponseDTO getSerieById(Long id) {
+        Optional<Serie> serie = serieRepository.findById(id);
+
+        if (serie.isPresent()) {
+            Serie s = serie.get();
+            return new SerieResponseDTO(
+                    s.getId(),
+                    s.getTitle(),
+                    s.getTotalSeasons(),
+                    s.getRating(),
+                    s.getGenre(),
+                    s.getActors(),
+                    s.getPoster(),
+                    s.getPlot());
+        }
+        return null;
+    }
 
     private List<SerieResponseDTO> dataConverter(List<Serie> series) {
         return series.stream()
