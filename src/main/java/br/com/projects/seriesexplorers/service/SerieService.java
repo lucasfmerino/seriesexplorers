@@ -26,6 +26,10 @@ public class SerieService {
         return dataConverter(serieRepository.findTop5ByOrderByRatingDesc());
     }
 
+    public List<SerieResponseDTO> getReleases() {
+        return dataConverter(serieRepository.lastReleases());
+    }
+
 
     private List<SerieResponseDTO> dataConverter(List<Serie> series) {
         return series.stream()
