@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.projects.seriesexplorers.dto.EpisodeResponseDTO;
 import br.com.projects.seriesexplorers.dto.SerieResponseDTO;
+import br.com.projects.seriesexplorers.model.Category;
 import br.com.projects.seriesexplorers.model.Serie;
 import br.com.projects.seriesexplorers.repository.SerieRepository;
 
@@ -64,6 +65,11 @@ public class SerieService {
         return serieRepository.getEpisodesBySeason(id, number).stream().map(e -> new EpisodeResponseDTO(
             e.getSeason(), e.getNumber(), e.getTitle()))
             .collect(Collectors.toList());
+    }
+
+    public List<SerieResponseDTO> getSeriesByCategory(String categoryName) {
+        Category category = Category.fromPortuguese(categoryName);
+        return dataConverter(serieRepository.findByGenre(category));
     }
 
     private List<SerieResponseDTO> dataConverter(List<Serie> series) {
